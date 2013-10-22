@@ -408,7 +408,7 @@ class CertificateItem(OrderItem):
             target_cert = CertificateItem.objects.get(course_id=target_course_id, user_id=target_user, status='purchased', mode='verified')
             target_cert.status = 'refunded'
             # todo return success
-            return
+            return target_cert
         except MultipleObjectsReturned:
             # this seems like a thing that shouldn't happen
             log.exception("Multiple entries for single verified cert found")

@@ -2,14 +2,14 @@
 Add and create new modes for running courses on this particular LMS
 """
 import pytz
-from datetime import datetime
+from datetime import datetime, date
 
 from django.db import models
 from collections import namedtuple
 from django.utils.translation import ugettext as _
 from django.db.models import Q
 
-Mode = namedtuple('Mode', ['slug', 'name', 'min_price', 'suggested_prices', 'currency', 'expiration_date'])
+Mode = namedtuple('Mode', ['slug', 'name', 'min_price', 'suggested_prices', 'currency'])
 
 
 class CourseMode(models.Model):
@@ -39,7 +39,7 @@ class CourseMode(models.Model):
     # turn this mode off after the given expiration date
     expiration_date = models.DateField(default=None, null=True, blank=True)
 
-    DEFAULT_MODE = Mode('honor', _('Honor Code Certificate'), 0, '', 'usd', None)
+    DEFAULT_MODE = Mode('honor', _('Honor Code Certificate'), 0, '', 'usd')
     DEFAULT_MODE_SLUG = 'honor'
 
     class Meta:
@@ -57,7 +57,7 @@ class CourseMode(models.Model):
         found_course_modes = cls.objects.filter(Q(course_id=course_id) &
                                                 (Q(expiration_date__isnull=True) |
                                                 Q(expiration_date__gte=now)))
-        modes = ([Mode(mode.mode_slug, mode.mode_display_name, mode.min_price, mode.suggested_prices, mode.currency, mode.expiration_date)
+        modes = ([Mode(mode.mode_slug, mode.mode_display_name, mode.min_price, mode.suggested_prices, mode.currency)
                   for mode in found_course_modes])
         if not modes:
             modes = [cls.DEFAULT_MODE]
@@ -102,7 +102,9 @@ class CourseMode(models.Model):
         no longer possible.  Note that this is currently set to be identical to the expiration date for
         verified cert signups, but this could be changed in the future
         """
-        return cls.mode_for_course(course_id,mode_slug).expiration_date
+        print "TODO fix this"
+        return date(1990,1,1)
+        #return cls.mode_for_course(course_id,mode_slug).expiration_date
 
     def __unicode__(self):
         return u"{} : {}, min={}, prices={}".format(

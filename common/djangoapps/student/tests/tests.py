@@ -400,8 +400,6 @@ class CertificateItemTest(ModuleStoreTestCase):
         self.user = User.objects.create(username="test", email="test@test.org")
 
     def test_unenroll_and_refund(self):
-        from nose.tools import set_trace; set_trace()
-        print "is this triggering"
         request = self.req_factory.post(reverse('change_enrollment'), {'course_id': self.course.id, 'enrollment_action': 'unenroll'})
         request.user = self.user
         response = change_enrollment(request)

@@ -1,7 +1,8 @@
 """
 Student Views
 """
-from datetime import datetime, date, time
+import datetime
+from datetime import date
 import json
 import logging
 import random
@@ -429,6 +430,7 @@ def change_enrollment(request):
         # did they sign up for verified certs?
         if(verified):
             # If the expiration date has not passed, refund them.
+            from nose.tools import set_trace; set_trace()
             if date.today() <= CourseMode.refund_expiration_date(course_id,'verified'):
                 subject = _("[Refund] User-Requested Refund")
                 # todo: make this reference templates/student/refund_email.html
