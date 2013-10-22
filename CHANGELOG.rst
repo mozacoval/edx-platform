@@ -390,7 +390,10 @@ Common: Updated CodeJail.
 
 Common: Allow setting of authentication session cookie name.
 
-CMS: added restful interface for finding orphans in courses: GET http://host/org.course/orphan returns json array of ids
+CMS: added restful interface for finding orphans in courses. An orphan is an xblock to which no children relation 
+points and whose type is not in the set contentstore.views.item.DETACHED_CATEGORIES nor 'course'.
+    GET http://host/org.course/orphan returns json array of ids. Requires course author access.
+    DELETE http://host/org.course/orphan deletes all the orphans in that course. Requires is_staff access
 
 LMS: Option to email students when enroll/un-enroll them.
 
