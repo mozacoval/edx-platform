@@ -11,7 +11,8 @@ beautifulsoup==3.2.1
 boto==2.6.0
 celery==3.0.19
 dealer==0.2.3
-distribute>=0.6.28, <0.7
+# distribute>=0.6.28, <0.7
+distribute>=0.7
 django-celery==3.0.17
 django-countries==1.5
 django-filter==0.6.0
@@ -107,6 +108,5 @@ git+https://github.com/mitocw/django-cas.git
 
 # Only for memory debugging
 dowser==0.1
-distribute
 Cython==0.19.2
 # meliae==0.4.0
