@@ -202,6 +202,17 @@ def _has_access_course_desc(user, course, action):
 
         return can_enroll() or can_load()
 
+    def refund():
+        """
+
+        """
+        now = datetime.now(UTC())
+        end = course.enrollment_end
+        grace_period = datetime.timedelta(days=14)
+        refund_end = end + grace_period
+        if (end is None or now > refund_end):
+            return True
+
     checkers = {
         'load': can_load,
         'load_forum': can_load_forum,
