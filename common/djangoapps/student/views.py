@@ -272,6 +272,8 @@ def dashboard(request):
     # exist (because the course IDs have changed). Still, we don't delete those
     # enrollments, because it could have been a data push snafu.
     courses = []
+    refund_status = []
+    from nose.tools import set_trace; set_trace()
     for enrollment in CourseEnrollment.enrollments_for_user(user):
         try:
             courses.append((course_from_id(enrollment.course_id), enrollment))
@@ -303,13 +305,16 @@ def dashboard(request):
                                         if (settings.MITX_FEATURES['ENABLE_INSTRUCTOR_EMAIL'] and
                                             modulestore().get_modulestore_type(course.id) == MONGO_MODULESTORE_TYPE))
 
+    show_refund_option_for = frozenset(course.id for course, _enrollment in courses
+                                        if (has_access(request.user, course, 'refund') and (_enrollment.mode == "verified")))
+
     # get info w.r.t ExternalAuthMap
     external_auth_map = None
     try:
         external_auth_map = ExternalAuthMap.objects.get(user=user)
     except ExternalAuthMap.DoesNotExist:
         pass
-
+    from nose.tools import set_trace; set_trace()           
     context = {'courses': courses,
                'course_optouts': course_optouts,
                'message': message,
@@ -318,7 +323,8 @@ def dashboard(request):
                'errored_courses': errored_courses,
                'show_courseware_links_for': show_courseware_links_for,
                'cert_statuses': cert_statuses,
-               'show_email_settings_for': show_email_settings_for,
+               'show_email_settings_for': frozenset([u'FFX/10000Needles/2014_Spring']),
+               'show_refund_option_for': show_refund_option_for,
                }
 
     return render_to_response('dashboard.html', context)
@@ -429,7 +435,7 @@ def change_enrollment(request):
         verified = CourseEnrollment.enrollment_mode_for_user(user, course_id)
         # did they sign up for verified certs?
         if(verified):
-            from nose.tools import set_trace; set_trace()
+
             # If the user is allowed a refund, do so
             if has_access(user, course, 'refund'):
                 subject = _("[Refund] User-Requested Refund")

@@ -208,16 +208,22 @@ def _has_access_course_desc(user, course, action):
         """
         now = datetime.now(UTC())
         end = course.enrollment_end
-        grace_period = datetime.timedelta(days=14)
-        refund_end = end + grace_period
-        if (end is None or now > refund_end):
+        if (end is None):
             return True
+        # if the enrollment period never ends, we can always refund
+        grace_period = timedelta(days=14)
+        refund_end = end + grace_period
+        if (now < refund_end):
+            return True
+        return False
+
 
     checkers = {
         'load': can_load,
         'load_forum': can_load_forum,
         'enroll': can_enroll,
         'see_exists': see_exists,
+        'refund': refund,
         'staff': lambda: _has_staff_access_to_descriptor(user, course),
         'instructor': lambda: _has_instructor_access_to_descriptor(user, course),
         }
