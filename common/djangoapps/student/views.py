@@ -429,9 +429,9 @@ def change_enrollment(request):
         verified = CourseEnrollment.enrollment_mode_for_user(user, course_id)
         # did they sign up for verified certs?
         if(verified):
-            # If the expiration date has not passed, refund them.
             from nose.tools import set_trace; set_trace()
-            if date.today() <= CourseMode.refund_expiration_date(course_id,'verified'):
+            # If the user is allowed a refund, do so
+            if has_access(user, course, 'refund'):
                 subject = _("[Refund] User-Requested Refund")
                 # todo: make this reference templates/student/refund_email.html
                 message = "Important info here."

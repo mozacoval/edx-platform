@@ -217,7 +217,13 @@
     <button class="close-modal">&#10005; <span class="sr">${_('Close Modal')}</span></button>
 
     <header>
+    % if refund_available == "unpaid":
       <h2 id="unenrollment-modal-title">${_('Are you sure you want to unregister from {course_number}?').format(course_number='<span id="unenroll_course_number"></span>')}</h2>
+    % elif refund_available == "yes":
+      <h2 id="unenrollment-modal-title">${_('Are you sure you want to unregister from {course_number}?  You will receive a refund for the amount you paid.').format(course_number='<span id="unenroll_course_number"></span>')}</h2>
+    % elif refund_available == "no":
+      <h2 id="unenrollment-modal-title">${_('Are you sure you want to unregister from {course_number}?  The deadline for certificate refunds has passed, so you will not receive a refund on the amount you paid.').format(course_number='<span id="unenroll_course_number"></span>')}</h2>
+    % endif
       <hr/>
     </header>
 
