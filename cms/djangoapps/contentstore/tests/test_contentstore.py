@@ -56,6 +56,7 @@ from pymongo import MongoClient
 from student.models import CourseEnrollment
 
 from contentstore.utils import delete_course_and_groups
+from xmodule.modulestore.django import loc_mapper
 
 TEST_DATA_CONTENTSTORE = copy.deepcopy(settings.CONTENTSTORE)
 TEST_DATA_CONTENTSTORE['DOC_STORE_CONFIG']['db'] = 'test_xcontent_%s' % uuid4().hex
@@ -1577,6 +1578,7 @@ class ContentStoreTest(ModuleStoreTestCase):
         """
         import_from_xml(modulestore('direct'), 'common/test/data/', ['simple'])
         loc = Location(['i4x', 'edX', 'simple', 'course', '2012_Fall', None])
+        new_location = loc_mapper().translate_location(loc.course_id, loc, False, True)
         resp = self.client.get(reverse('course_index',
                                        kwargs={'org': loc.org,
                                                'course': loc.course,
@@ -1601,11 +1603,9 @@ class ContentStoreTest(ModuleStoreTestCase):
                                                'name': loc.name}))
         self.assertEqual(resp.status_code, 200)
 
-        # manage users
-        resp = self.client.get(reverse('manage_users',
-                                       kwargs={'org': loc.org,
-                                               'course': loc.course,
-                                               'name': loc.name}))
+        # course team
+        url = new_location.url_reverse('course_team/', '')
+        resp = self.client.get(url, HTTP_ACCEPT='text/html')
         self.assertEqual(resp.status_code, 200)
 
         # course info

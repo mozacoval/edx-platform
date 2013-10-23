@@ -51,12 +51,6 @@ urlpatterns = patterns('',  # nopep8
     url(r'^(?P<org>[^/]+)/(?P<course>[^/]+)/course/(?P<coursename>[^/]+)/upload_asset$',
         'contentstore.views.upload_asset', name='upload_asset'),
 
-    url(r'^(?P<org>[^/]+)/(?P<course>[^/]+)/team/(?P<name>[^/]+)$',
-        'contentstore.views.manage_users', name='manage_users'),
-    url(r'^(?P<org>[^/]+)/(?P<course>[^/]+)/team/(?P<name>[^/]+)/(?P<email>[^/]+)$',
-        'contentstore.views.course_team_user', name='course_team_user'),
-
-
     url(r'^(?P<org>[^/]+)/(?P<course>[^/]+)/info/(?P<name>[^/]+)$',
         'contentstore.views.course_info', name='course_info'),
     url(r'^(?P<org>[^/]+)/(?P<course>[^/]+)/course_info/updates/(?P<provided_id>.*)$',
@@ -147,6 +141,7 @@ urlpatterns += patterns(
     # (?ix) == ignore case and verbose (multiline regex)
     url(r'(?ix)^course/{}$'.format(parsers.URL_RE_SOURCE), 'course_handler'),
     url(r'(?ix)^checklists/{}(/)?(?P<checklist_index>\d+)?$'.format(parsers.URL_RE_SOURCE), 'checklists_handler'),
+    url(r'(?ix)^course_team/{}(/)?(?P<email>.+)?$'.format(parsers.URL_RE_SOURCE), 'course_team_handler'),
 )
 
 js_info_dict = {
