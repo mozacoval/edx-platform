@@ -56,6 +56,7 @@ from pymongo import MongoClient
 from student.models import CourseEnrollment
 
 from contentstore.utils import delete_course_and_groups
+from xmodule.modulestore.django import loc_mapper
 
 TEST_DATA_CONTENTSTORE = copy.deepcopy(settings.CONTENTSTORE)
 TEST_DATA_CONTENTSTORE['DOC_STORE_CONFIG']['db'] = 'test_xcontent_%s' % uuid4().hex
@@ -1516,13 +1517,10 @@ class ContentStoreTest(ModuleStoreTestCase):
         """Test viewing the course overview page with an existing course"""
         CourseFactory.create(org='MITx', course='999', display_name='Robot Super Course')
 
-        data = {
-            'org': 'MITx',
-            'course': '999',
-            'name': Location.clean('Robot Super Course'),
-        }
+        loc = Location(['i4x', 'MITx', '999', 'course', Location.clean('Robot Super Course'), None])
+        new_location = loc_mapper().translate_location(loc.course_id, loc, False, True)
 
-        resp = self.client.get(reverse('course_index', kwargs=data))
+        resp = self.client.get(new_location.url_reverse('course/', ''), HTTP_ACCEPT='text/html')
         self.assertContains(
             resp,
             '<article class="courseware-overview" data-id="i4x://MITx/999/course/Robot_Super_Course">',
@@ -1577,10 +1575,9 @@ class ContentStoreTest(ModuleStoreTestCase):
         """
         import_from_xml(modulestore('direct'), 'common/test/data/', ['simple'])
         loc = Location(['i4x', 'edX', 'simple', 'course', '2012_Fall', None])
-        resp = self.client.get(reverse('course_index',
-                                       kwargs={'org': loc.org,
-                                               'course': loc.course,
-                                               'name': loc.name}))
+        new_location = loc_mapper().translate_location(loc.course_id, loc, False, True)
+
+        resp = self.client.get(new_location.url_reverse('course/', ''), HTTP_ACCEPT='text/html')
 
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'Chapter 2')

@@ -105,17 +105,6 @@ def course_handler(request, tag=None, course_id=None, branch=None, version_guid=
 
 @login_required
 @ensure_csrf_cookie
-def old_course_index_shim(request, org, course, name):
-    """
-    A shim for any unconverted uses of course_index
-    """
-    old_location = Location(['i4x', org, course, 'course', name])
-    locator = loc_mapper().translate_location(old_location.course_id, old_location, False, True)
-    return course_index(request, locator.course_id, locator.branch, locator.version_guid, locator.usage_id)
-
-
-@login_required
-@ensure_csrf_cookie
 def course_index(request, course_id, branch, version_guid, block):
     """
     Display an editable course overview.
